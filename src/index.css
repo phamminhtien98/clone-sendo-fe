@@ -1,0 +1,254 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin     : 0;
+  padding    : 0;
+  box-sizing : border-box;
+  font-family: 'Roboto', sans-serif !important;
+}
+
+html {
+  height         : 100%;
+  margin         : 0;
+  font-size      : 10px;
+  scroll-behavior: smooth;
+  box-sizing     : border-box;
+  font-family    : inherit;
+}
+
+::-webkit-scrollbar {
+  width: 0.8rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background   : #cfd2d4;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fff;
+}
+
+
+body {
+  overflow-x      : hidden;
+  overflow-y      : scroll;
+  font-size       : 1.4rem;
+  background-color: #f1f1f1;
+  height          : 100%;
+  font-weight     : 400;
+  line-height     : 1.8rem;
+  color           : #212529;
+  text-align      : left;
+}
+
+a {
+  color          : unset;
+  text-decoration: none;
+}
+
+ul {
+  list-style-type: none;
+}
+
+button {
+  line-height: normal;
+}
+
+#sidebar::-webkit-scrollbar {
+  width : 0.4rem;
+  height: 10.6rem;
+}
+
+#sidebar::-webkit-scrollbar-thumb {
+  background   : #cfd2d4;
+  border-radius: 4px;
+}
+
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin            : 0;
+}
+
+@media (min-width: 0px) {
+  .containerct {
+    margin       : 0 auto;
+    max-width    : 100%;
+    padding-left : 1.6rem;
+    padding-right: 1.6rem;
+  }
+
+  .sm-8_33 {
+    flex-basis: calc(100% / 12);
+    flex-grow : 0;
+    max-width : calc(100% / 12);
+  }
+
+  .sm-16_67 {
+    flex-basis: calc(100% / 6);
+    flex-grow : 0;
+    max-width : calc(100% / 6);
+  }
+
+  .sm-41_67 {
+    flex-basis: calc(100% / 2.4);
+    flex-grow : 0;
+    max-width : calc(100% / 2.4);
+  }
+
+  .sm-50 {
+    flex-basis: calc(100% / 2);
+    flex-grow : 0;
+    max-width : calc(100% / 2);
+  }
+
+  .sm-100 {
+    flex-basis: 0;
+    flex-grow : 1;
+    max-width : 100%;
+  }
+}
+
+@media (min-width: 576px) {
+  .containerct {
+    margin       : 0 auto;
+    max-width    : 768px;
+    padding-left : 1.6rem;
+    padding-right: 1.6rem;
+  }
+
+  .md-8_33 {
+    flex-basis: calc(100% / 12);
+    flex-grow : 0;
+    max-width : calc(100% / 12);
+  }
+
+  .md-16_67 {
+    flex-basis: calc(100% / 6);
+    flex-grow : 0;
+    max-width : calc(100% / 6);
+  }
+
+  .md-33_33 {
+    flex-basis: calc(100% / 3);
+    flex-grow : 0;
+    max-width : calc(100% / 3);
+  }
+
+  .md-41_67 {
+    flex-basis: calc(100% / 2.4);
+    flex-grow : 0;
+    max-width : calc(100% / 2.4);
+  }
+
+  .md-50 {
+    flex-basis: calc(100% / 2);
+    flex-grow : 0;
+    max-width : calc(100% / 2);
+  }
+
+  .md-100 {
+    flex-basis: 0;
+    flex-grow : 1;
+    max-width : 100%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .containerct {
+    margin       : 0 auto;
+    max-width    : 1272px;
+    padding-left : 2.4rem;
+    padding-right: 2.4rem;
+  }
+
+  .lg-8_33 {
+    flex-basis: calc(100% / 12);
+    flex-grow : 0;
+    max-width : calc(100% / 12);
+  }
+
+  .lg-16_67 {
+    flex-basis: calc(100% / 6);
+    flex-grow : 0;
+    max-width : calc(100% / 6);
+  }
+
+  .lg-33_33 {
+    flex-basis: calc(100% / 3);
+    flex-grow : 0;
+    max-width : calc(100% / 3);
+  }
+
+  .lg-41_67 {
+    flex-basis: calc(100% / 2.4);
+    flex-grow : 0;
+    max-width : calc(100% / 2.4);
+  }
+
+  .lg-50 {
+    flex-basis: calc(100% / 2);
+    flex-grow : 0;
+    max-width : calc(100% / 2);
+  }
+
+  .lg-100 {
+    flex-basis: 0;
+    flex-grow : 1;
+    max-width : 100%;
+  }
+
+  .lg-auto {
+    flex-basis: auto;
+    flex-grow : 0;
+    max-width : none;
+    width     : auto;
+  }
+}
+
+@media (min-width: 1360px) {
+  .containerct {
+    margin       : 0 auto;
+    max-width    : 1356px;
+    padding-left : 2.4rem;
+    padding-right: 2.4rem;
+  }
+
+  .xl-8_33 {
+    flex-basis: calc(100% / 12);
+    flex-grow : 0;
+    max-width : calc(100% / 12);
+  }
+
+  .xl-16_67 {
+    flex-basis: calc(100% / 6);
+    flex-grow : 0;
+    max-width : calc(100% / 6);
+  }
+
+  .xl-33_33 {
+    flex-basis: calc(100% / 3);
+    flex-grow : 0;
+    max-width : calc(100% / 3);
+  }
+
+  .xl-41_67 {
+    flex-basis: calc(100% / 2.4);
+    flex-grow : 0;
+    max-width : calc(100% / 2.4);
+  }
+
+  .xl-50 {
+    flex-basis: calc(100% / 2);
+    flex-grow : 0;
+    max-width : calc(100% / 2);
+  }
+
+  .xl-100 {
+    flex-basis: 0;
+    flex-grow : 1;
+    max-width : 100%;
+  }
+}
