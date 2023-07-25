@@ -1,12 +1,14 @@
+import { IProduct } from "../../../../@Types/Types";
 import BtnXemThem from "./BtnXemThem";
 import NotResult from "./NotResult";
 import ProductFlashSale from "./ProductFlashSale";
 import ProductSKU from "./ProductSKU";
 
 interface Props {
-  dataProductList: any[];
+  dataProductList: IProduct[];
+  page: number;
 }
-const ListProducts = ({ dataProductList }: Props) => {
+const ListProducts = ({ dataProductList, page }: Props) => {
   return (
     <>
       {dataProductList.length === 0 ? (
@@ -24,7 +26,7 @@ const ListProducts = ({ dataProductList }: Props) => {
           )}
         </div>
       )}
-      <BtnXemThem />
+      {page >= 3 && <BtnXemThem />}
     </>
   );
 };

@@ -1,8 +1,9 @@
 import { Key } from "react";
 import { Link } from "react-router-dom";
+import { IProduct } from "../../../../@Types/Types";
 
 interface Props {
-  data: any;
+  data: IProduct;
 }
 const ProductFlashSale = ({ data }: Props) => {
   return (
@@ -18,7 +19,7 @@ const ProductFlashSale = ({ data }: Props) => {
         >
           <div
             className={`${
-              data.title === "FlashSale" ? "w-[10.2rem]" : "w-full"
+              data.type === "FlashSale" ? "w-[10.2rem]" : "w-full"
             } h-[2.4rem] mb-[3.9rem] bg-contain bg-no-repeat`}
             style={{
               backgroundImage: `url(${
@@ -40,7 +41,7 @@ const ProductFlashSale = ({ data }: Props) => {
               <div className="w-full h-max overflow-hidden relative pt-[100%]">
                 <div className="h-full w-full top-0 bottom-0 left-0 right-0 absolute">
                   <img
-                    src={data.item.thumbnail_url}
+                    src={data.thumbnail_url}
                     alt="thumbnail"
                     className="h-full left-[50%] top-[50%] absolute translate-y-[-50%] translate-x-[-50%]"
                   />
@@ -50,13 +51,10 @@ const ProductFlashSale = ({ data }: Props) => {
             {/* thông tin */}
             <div className=" pt-[1.6rem] px-[0.8rem] pb-[0.8rem] relative">
               {/* sự kiện */}
-              {data.item.event_banners && (
+              {data.event_banners && (
                 <div className="flex h-[1.6rem] overflow-hidden absolute w-full top-0 translate-x-[-0.8rem] translate-y-[-50%]">
-                  {data.item.event_banners.map(
-                    (
-                      item: { image: string | undefined },
-                      index: Key | null | undefined
-                    ) => (
+                  {data.event_banners.map(
+                    (item, index: Key | null | undefined) => (
                       <img key={index} src={item.image} alt="" />
                     )
                   )}
@@ -65,39 +63,38 @@ const ProductFlashSale = ({ data }: Props) => {
               {/* giá */}
               <div className="leading-[1.8rem]">
                 <div className="text-[#ee2624] text-[16px] leading-[2.2rem] font-[700] text-ellipsis overflow-hidden">
-                  {data.item.final_price.toLocaleString("vi-VN")}đ
+                  {data.final_price && data.final_price.toLocaleString("vi-VN")}
+                  đ
                 </div>
                 <div className="h-[1.6rem]">
-                  {data.item.promotion_percentage && (
+                  {data.promotion_percentage && (
                     <>
                       <span className="text-[#b7bbbf] text-[11px] line-through">
-                        {data.item.price}
+                        {data.price}
                       </span>
-                      <span className="text-[#ee2624] text-[12px] leading-[1.6rem] ml-[0.4rem]">{`-${data.item.promotion_percentage}%`}</span>
+                      <span className="text-[#ee2624] text-[12px] leading-[1.6rem] ml-[0.4rem]">{`-${data.promotion_percentage}%`}</span>
                     </>
                   )}
                 </div>
               </div>
               {/* Mở bán */}
               <div className="h-[1.4rem] mb-[0.4rem]">
-                {data.item.quantity && data.item.remaining && (
+                {data.quantity && data.remaining && (
                   <div className="mt-[0.4rem]">
                     <div className="h-[1.4rem] mb-[0.4rem] rounded-[8px] bg-[#f47c7b] w-[100%] relative overflow-hidden">
                       <div
                         className="absolute h-[1.4rem] top-0 left-0 z-0 rounded-[8px] bg-[#d52220]"
                         style={{
                           width: `${
-                            ((data.item.quantity - data.item.remaining) * 100) /
-                            data.item.quantity
+                            ((data.quantity - data.remaining) * 100) /
+                            data.quantity
                           }%`,
                         }}
                       ></div>
                       <span className="leading-[1.5rem] absolute z-[1] left-[50%] translate-x-[-50%] text-white text-[11px] text-center">
-                        {data.item.quantity === data.item.remaining
+                        {data.quantity === data.remaining
                           ? "Mở bán"
-                          : `Đã bán ${
-                              data.item.quantity - data.item.remaining
-                            }`}
+                          : `Đã bán ${data.quantity - data.remaining}`}
                       </span>
                     </div>
                   </div>

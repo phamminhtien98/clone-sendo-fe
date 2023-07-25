@@ -1,43 +1,50 @@
-import { useState, useEffect, useMemo } from "react";
-import { Categories, IParamsConfig } from "../../@Types/Types";
-import { dataFilter as getDataFilter } from "../../data/Filter";
-import { ProductLists } from "../../data/ProductLists";
+import { useEffect, useMemo, useState } from "react";
+import { Categories, IParamsConfig, IProduct } from "../../@Types/Types";
 import Breadcrumb from "./breadcrumb/Breadcrumb";
 import ListProducts from "./productListContent/listItem/ListProducts";
 import SortProduct from "./productListContent/listItem/SortProduct";
 import SideBar from "./productListContent/sidebar/SideBar";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import FilterProduct from "../../utils/FilterProduct";
 import TopTitle from "./productListContent/listItem/TopTitle";
 import { useQuery } from "@tanstack/react-query";
 import { getCategoriesParent } from "../../apis/category.api";
 import { getListFilterSideBar } from "../../apis/datafilter.api";
+import {
+  getProductsList,
+  getProductsListByParam,
+} from "../../apis/product.api";
 
 // const dataFilter = getDataFilter as any;
-const dataProductList = ProductLists;
+// const dataProductList = ProductLists;
 const ProductList = () => {
-  const [productLists, setProductList] = useState(dataProductList);
   const [search, setSearch] = useSearchParams();
+  const location = useLocation();
+  const cate_path = location.pathname.split("/")[1];
   const paramConfig: IParamsConfig = Object.fromEntries([...search]);
+  const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [productList, setProductList] = useState<IProduct[]>([]);
 
   // const categories = getCategories;
   const categories = useQuery({
     queryKey: ["category"],
     queryFn: () => getCategoriesParent(),
+    keepPreviousData: true,
   });
   const dataFilters = useQuery({
     queryKey: ["filterSideBar"],
     queryFn: () => getListFilterSideBar(),
+    keepPreviousData: true,
   });
-  console.log(dataFilters);
-  console.log("category", categories.data);
+  const dataProductList = useQuery({
+    queryKey: ["products", paramConfig, cate_path],
+    queryFn: () => getProductsListByParam(paramConfig, cate_path),
+    keepPreviousData: true,
+  });
 
   const handleSelectCategory = (category: Categories) => {
-    let listProduct = FilterProduct.findProductById(
-      dataProductList,
-      category.id
-    );
-    setProductList(listProduct);
+    console.log(category);
   };
 
   //dependency thay thế dùng paramConfig cho useEffect khi rerender sẽ tạo ra 1 instance của paramConfig nên nó sẽ gọi lại useEffect => chạy vô hạn
@@ -46,27 +53,32 @@ const ProductList = () => {
   }, [paramConfig]);
 
   useEffect(() => {
-    let listProduct = FilterProduct.filterProduct(dataProductList, paramConfig);
-    if (
-      (paramConfig.sort_type && paramConfig.sort_type === "vasup_desc") ||
-      paramConfig.sort_type === undefined
-    ) {
-      setProductList(listProduct);
-    } else if (
-      paramConfig.sort_type &&
-      paramConfig.sort_type === "norder_30_desc"
-    ) {
-      setProductList(FilterProduct.sortBanChay(listProduct));
-    } else if (
-      paramConfig.sort_type &&
-      paramConfig.sort_type === "real_discount_desc"
-    ) {
-      setProductList(FilterProduct.sortKhuyenMai(listProduct));
-    } else if (
-      paramConfig.sort_type &&
-      paramConfig.sort_type === "rating_percent_desc"
-    ) {
-      setProductList(FilterProduct.sortDanhGia(listProduct));
+    if (dataProductList.isSuccess) {
+      let listProduct = FilterProduct.filterProduct(
+        dataProductList.data?.data,
+        paramConfig
+      );
+      if (
+        (paramConfig.sort_type && paramConfig.sort_type === "vasup_desc") ||
+        paramConfig.sort_type === undefined
+      ) {
+        // setProductList(listProduct);
+      } else if (
+        paramConfig.sort_type &&
+        paramConfig.sort_type === "norder_30_desc"
+      ) {
+        // setProductList(FilterProduct.sortBanChay(listProduct));
+      } else if (
+        paramConfig.sort_type &&
+        paramConfig.sort_type === "real_discount_desc"
+      ) {
+        // setProductList(FilterProduct.sortKhuyenMai(listProduct));
+      } else if (
+        paramConfig.sort_type &&
+        paramConfig.sort_type === "rating_percent_desc"
+      ) {
+        // setProductList(FilterProduct.sortDanhGia(listProduct));
+      }
     }
   }, [dependency]);
 
@@ -96,7 +108,12 @@ const ProductList = () => {
             <div className="flex-1">
               <SortProduct />
               <div className="min-h-[80vh] mt-[1.6rem]">
-                <ListProducts dataProductList={productLists} />
+                {dataProductList.isSuccess && (
+                  <ListProducts
+                    dataProductList={dataProductList.data?.data}
+                    page={page}
+                  />
+                )}
               </div>
             </div>
           </div>

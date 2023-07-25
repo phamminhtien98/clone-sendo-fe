@@ -13,7 +13,6 @@ const Chat = () => {
           <path
             d="M20 2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-7.913L6 21.804V18H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h16Zm0 2H4v12h4v2.196L11.513 16H20V4Zm-6 7v2H7v-2h7Zm2-4v2H7V7h9Z"
             fill="#fff"
-            fill-rule="nonzero"
           ></path>
         </svg>
         <span className="pl-[0.8rem] text-white font-[700] text-[14px]">

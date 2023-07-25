@@ -193,9 +193,9 @@ const SideBarKhoangGia = ({ dataFilter, attribute_key }: Props) => {
                   HandleSelectPrice(item.ltprice, item.gtprice);
                 }}
               >
-                {item.gtprice && item.ltprice === -1
+                {item.ltprice && item.gtprice === -1
                   ? `Dưới ${item.ltprice / 1000}K`
-                  : item.ltprice && item.gtprice === -1
+                  : item.gtprice && item.ltprice === -1
                   ? `Trên ${item.gtprice / 1000}K`
                   : item.gtprice && item.ltprice
                   ? `${item.gtprice / 1000}K - ${item.ltprice / 1000}K`
