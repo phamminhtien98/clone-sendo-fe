@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Categories, IParamsConfig, IProduct } from "../../@Types/Types";
 import Breadcrumb from "./breadcrumb/Breadcrumb";
 import ListProducts from "./productListContent/listItem/ListProducts";
@@ -23,8 +23,44 @@ const ProductList = () => {
   const cate_path = location.pathname.split("/")[1];
   const paramConfig: IParamsConfig = Object.fromEntries([...search]);
   const [page, setPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
+  const [pageSize, setPageSize] = useState<number>(15);
   const [productList, setProductList] = useState<IProduct[]>([]);
+  const listProductRef = useRef<HTMLDivElement>(null);
+  const [dataFetched, setDataFetched] = useState(true);
+  const [cancleNextPage, setCancleNextPage] = useState(false);
+
+  //dependency thay thế dùng paramConfig cho useEffect khi rerender sẽ tạo ra 1 instance của paramConfig nên nó sẽ gọi lại useEffect => chạy vô hạn
+  const paramConfigMemo = useMemo(() => {
+    return JSON.stringify(paramConfig);
+  }, [paramConfig]);
+
+  const cate_pathMemo = useMemo(() => {
+    return JSON.stringify(cate_path);
+  }, [cate_path]);
+  // lắng nghe sự kiện khi trang được refresh
+  useEffect(() => {
+    // Di chuyển scroll về đầu trang khi trang được refresh
+    if (window.scrollY === 0) {
+      // Trang đã cuộn về đầu trang hoàn tất
+      setPage(1);
+    }
+    window.scrollTo(0, 0);
+  }, [cate_pathMemo, paramConfigMemo, location]);
+
+  // useEffect(() => {
+  //   const handleScroll = async () => {
+  //     if (window.scrollY === 0) {
+  //       // Trang đã cuộn về đầu trang hoàn tất
+  //       setPage(1);
+  //     }
+  //   };
+  //   // Thêm sự kiện 'scroll'
+  //   window.addEventListener("scroll", handleScroll);
+  //   window.scrollTo(0, 0);
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, [paramConfigMemo, cate_pathMemo]);
 
   // const categories = getCategories;
   const categories = useQuery({
@@ -32,55 +68,71 @@ const ProductList = () => {
     queryFn: () => getCategoriesParent(),
     keepPreviousData: true,
   });
+
   const dataFilters = useQuery({
     queryKey: ["filterSideBar"],
     queryFn: () => getListFilterSideBar(),
     keepPreviousData: true,
   });
+
   const dataProductList = useQuery({
-    queryKey: ["products", paramConfig, cate_path],
-    queryFn: () => getProductsListByParam(paramConfig, cate_path),
+    queryKey: ["products", paramConfig, cate_path, page, pageSize],
+    queryFn: () =>
+      getProductsListByParam(paramConfig, cate_path, page, pageSize),
     keepPreviousData: true,
+    onSuccess: (data) => {
+      console.log("susecc", page);
+
+      if (page === 1) {
+        setProductList([...data.data]);
+      } else {
+        setProductList((pre) => [...pre, ...data.data]);
+      }
+      if (data.data.length === 0) {
+        setCancleNextPage(true);
+      } else {
+        setCancleNextPage(false);
+      }
+      setDataFetched(true);
+    },
+  });
+
+  useEffect(() => {
+    console.log(page);
+    console.log(productList);
   });
 
   const handleSelectCategory = (category: Categories) => {
-    console.log(category);
+    const paramsList = [...search.keys()];
+    // Xóa từng tham số
+    paramsList.forEach((param) => {
+      search.delete(param);
+    });
+    // Cập nhật lại URL với các thay đổi
+    setSearch(search);
   };
 
-  //dependency thay thế dùng paramConfig cho useEffect khi rerender sẽ tạo ra 1 instance của paramConfig nên nó sẽ gọi lại useEffect => chạy vô hạn
-  const dependency = useMemo(() => {
-    return JSON.stringify(paramConfig);
-  }, [paramConfig]);
+  const handleNextPage = () => {
+    setPage((pre) => pre + 1);
+  };
 
-  useEffect(() => {
-    if (dataProductList.isSuccess) {
-      let listProduct = FilterProduct.filterProduct(
-        dataProductList.data?.data,
-        paramConfig
-      );
-      if (
-        (paramConfig.sort_type && paramConfig.sort_type === "vasup_desc") ||
-        paramConfig.sort_type === undefined
-      ) {
-        // setProductList(listProduct);
-      } else if (
-        paramConfig.sort_type &&
-        paramConfig.sort_type === "norder_30_desc"
-      ) {
-        // setProductList(FilterProduct.sortBanChay(listProduct));
-      } else if (
-        paramConfig.sort_type &&
-        paramConfig.sort_type === "real_discount_desc"
-      ) {
-        // setProductList(FilterProduct.sortKhuyenMai(listProduct));
-      } else if (
-        paramConfig.sort_type &&
-        paramConfig.sort_type === "rating_percent_desc"
-      ) {
-        // setProductList(FilterProduct.sortDanhGia(listProduct));
+  const handleScroll = () => {
+    if (
+      listProductRef.current &&
+      window.scrollY >= listProductRef.current.scrollHeight * 0.8
+    ) {
+      if (page < 2 && dataFetched) {
+        setDataFetched(false);
+        setPage((pre) => pre + 1);
       }
     }
-  }, [dependency]);
+  };
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [page, dataFetched]);
 
   return (
     <main>
@@ -107,11 +159,13 @@ const ProductList = () => {
             </div>
             <div className="flex-1">
               <SortProduct />
-              <div className="min-h-[80vh] mt-[1.6rem]">
+              <div ref={listProductRef} className="min-h-[80vh] mt-[1.6rem]">
                 {dataProductList.isSuccess && (
                   <ListProducts
-                    dataProductList={dataProductList.data?.data}
+                    dataProductList={productList}
                     page={page}
+                    handleNextPage={handleNextPage}
+                    cancleNextPage={cancleNextPage}
                   />
                 )}
               </div>

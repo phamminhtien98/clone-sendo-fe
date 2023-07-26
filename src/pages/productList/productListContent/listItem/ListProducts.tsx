@@ -7,8 +7,15 @@ import ProductSKU from "./ProductSKU";
 interface Props {
   dataProductList: IProduct[];
   page: number;
+  handleNextPage: () => void;
+  cancleNextPage: boolean;
 }
-const ListProducts = ({ dataProductList, page }: Props) => {
+const ListProducts = ({
+  dataProductList,
+  page,
+  handleNextPage,
+  cancleNextPage,
+}: Props) => {
   return (
     <>
       {dataProductList.length === 0 ? (
@@ -26,7 +33,9 @@ const ListProducts = ({ dataProductList, page }: Props) => {
           )}
         </div>
       )}
-      {page >= 3 && <BtnXemThem />}
+      {page >= 2 && !cancleNextPage && (
+        <BtnXemThem handleNextPage={handleNextPage} />
+      )}
     </>
   );
 };

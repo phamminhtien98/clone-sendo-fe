@@ -84,6 +84,7 @@ export interface IProduct {
 
 export interface IParamsConfig {
   p?: string; //page
+  s?: string;
   cate_path?: string;
 
   q?: string; //search

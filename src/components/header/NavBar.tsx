@@ -119,7 +119,7 @@ const NavBar = () => {
               <div
                 className={`flex bg-white rounded-[4px] w-[100%] justify-between items-center text-[14px]`}
               >
-                <div className="">
+                <div className="flex-1">
                   <input
                     className="rounded-[4px] px-[1.6rem] py-[0.8rem] w-[100%] leading-[2.2rem]"
                     type="text"
