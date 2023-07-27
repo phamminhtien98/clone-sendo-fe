@@ -5,15 +5,11 @@ import ListProducts from "./productListContent/listItem/ListProducts";
 import SortProduct from "./productListContent/listItem/SortProduct";
 import SideBar from "./productListContent/sidebar/SideBar";
 import { useLocation, useSearchParams } from "react-router-dom";
-import FilterProduct from "../../utils/FilterProduct";
 import TopTitle from "./productListContent/listItem/TopTitle";
 import { useQuery } from "@tanstack/react-query";
 import { getCategoriesParent } from "../../apis/category.api";
 import { getListFilterSideBar } from "../../apis/datafilter.api";
-import {
-  getProductsList,
-  getProductsListByParam,
-} from "../../apis/product.api";
+import { getProductsListByParam } from "../../apis/product.api";
 
 // const dataFilter = getDataFilter as any;
 // const dataProductList = ProductLists;
@@ -23,7 +19,7 @@ const ProductList = () => {
   const cate_path = location.pathname.split("/")[1];
   const paramConfig: IParamsConfig = Object.fromEntries([...search]);
   const [page, setPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(15);
+  const [pageSize, setPageSize] = useState<number>(10);
   const [productList, setProductList] = useState<IProduct[]>([]);
   const listProductRef = useRef<HTMLDivElement>(null);
   const [dataFetched, setDataFetched] = useState(true);
@@ -39,30 +35,21 @@ const ProductList = () => {
   }, [cate_path]);
   // lắng nghe sự kiện khi trang được refresh
   useEffect(() => {
-    // Di chuyển scroll về đầu trang khi trang được refresh
-    if (window.scrollY === 0) {
-      // Trang đã cuộn về đầu trang hoàn tất
-      setPage(1);
-    }
+    // đưa thanh cuộn về đầu trang
     window.scrollTo(0, 0);
+    const handleScroll = () => {
+      // set lại page về 1
+      if (window.scrollY === 0) {
+        setPage(1);
+        window.addEventListener("scroll", handleScroll);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, [cate_pathMemo, paramConfigMemo, location]);
 
-  // useEffect(() => {
-  //   const handleScroll = async () => {
-  //     if (window.scrollY === 0) {
-  //       // Trang đã cuộn về đầu trang hoàn tất
-  //       setPage(1);
-  //     }
-  //   };
-  //   // Thêm sự kiện 'scroll'
-  //   window.addEventListener("scroll", handleScroll);
-  //   window.scrollTo(0, 0);
-  //   return () => {
-  //     window.removeEventListener("scroll", handleScroll);
-  //   };
-  // }, [paramConfigMemo, cate_pathMemo]);
-
-  // const categories = getCategories;
   const categories = useQuery({
     queryKey: ["category"],
     queryFn: () => getCategoriesParent(),
@@ -81,8 +68,6 @@ const ProductList = () => {
       getProductsListByParam(paramConfig, cate_path, page, pageSize),
     keepPreviousData: true,
     onSuccess: (data) => {
-      console.log("susecc", page);
-
       if (page === 1) {
         setProductList([...data.data]);
       } else {
@@ -97,18 +82,13 @@ const ProductList = () => {
     },
   });
 
-  useEffect(() => {
-    console.log(page);
-    console.log(productList);
-  });
-
   const handleSelectCategory = (category: Categories) => {
     const paramsList = [...search.keys()];
     // Xóa từng tham số
     paramsList.forEach((param) => {
       search.delete(param);
     });
-    // Cập nhật lại URL với các thay đổi
+    // set lại url
     setSearch(search);
   };
 
@@ -116,18 +96,20 @@ const ProductList = () => {
     setPage((pre) => pre + 1);
   };
 
-  const handleScroll = () => {
-    if (
-      listProductRef.current &&
-      window.scrollY >= listProductRef.current.scrollHeight * 0.8
-    ) {
-      if (page < 2 && dataFetched) {
-        setDataFetched(false);
-        setPage((pre) => pre + 1);
-      }
-    }
-  };
   useEffect(() => {
+    const handleScroll = () => {
+      if (
+        listProductRef.current &&
+        window.scrollY + window.innerHeight >=
+          listProductRef.current.scrollHeight * 0.8
+      ) {
+        if (page < 2 && dataFetched) {
+          setPage((pre) => pre + 1);
+          setDataFetched(false);
+          window.removeEventListener("scroll", handleScroll);
+        }
+      }
+    };
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
