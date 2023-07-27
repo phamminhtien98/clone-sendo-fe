@@ -11,8 +11,6 @@ import { getCategoriesParent } from "../../apis/category.api";
 import { getListFilterSideBar } from "../../apis/datafilter.api";
 import { getProductsListByParam } from "../../apis/product.api";
 
-// const dataFilter = getDataFilter as any;
-// const dataProductList = ProductLists;
 const ProductList = () => {
   const [search, setSearch] = useSearchParams();
   const location = useLocation();
@@ -24,31 +22,6 @@ const ProductList = () => {
   const listProductRef = useRef<HTMLDivElement>(null);
   const [dataFetched, setDataFetched] = useState(true);
   const [cancleNextPage, setCancleNextPage] = useState(false);
-
-  //dependency thay thế dùng paramConfig cho useEffect khi rerender sẽ tạo ra 1 instance của paramConfig nên nó sẽ gọi lại useEffect => chạy vô hạn
-  const paramConfigMemo = useMemo(() => {
-    return JSON.stringify(paramConfig);
-  }, [paramConfig]);
-
-  const cate_pathMemo = useMemo(() => {
-    return JSON.stringify(cate_path);
-  }, [cate_path]);
-  // lắng nghe sự kiện khi trang được refresh
-  useEffect(() => {
-    // đưa thanh cuộn về đầu trang
-    window.scrollTo(0, 0);
-    const handleScroll = () => {
-      // set lại page về 1
-      if (window.scrollY === 0) {
-        setPage(1);
-        window.addEventListener("scroll", handleScroll);
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [cate_pathMemo, paramConfigMemo, location]);
 
   const categories = useQuery({
     queryKey: ["category"],
@@ -115,6 +88,32 @@ const ProductList = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [page, dataFetched]);
+
+  //dependency thay thế dùng paramConfig cho useEffect khi rerender sẽ tạo ra 1 instance của paramConfig nên nó sẽ gọi lại useEffect => chạy vô hạn
+  const paramConfigMemo = useMemo(() => {
+    return JSON.stringify(paramConfig);
+  }, [paramConfig]);
+
+  const cate_pathMemo = useMemo(() => {
+    return JSON.stringify(cate_path);
+  }, [cate_path]);
+
+  // lắng nghe sự kiện khi trang được refresh
+  useEffect(() => {
+    // đưa thanh cuộn về đầu trang
+    window.scrollTo(0, 0);
+    const handleScroll = () => {
+      // set lại page về 1
+      if (window.scrollY === 0) {
+        setPage(1);
+        window.addEventListener("scroll", handleScroll);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [cate_pathMemo, paramConfigMemo, location]);
 
   return (
     <main>
