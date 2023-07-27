@@ -102,10 +102,12 @@ const ProductList = () => {
   useEffect(() => {
     // đưa thanh cuộn về đầu trang
     window.scrollTo(0, 0);
+    document.body.classList.add("unSmooth");
     const handleScroll = () => {
       // set lại page về 1
       if (window.scrollY === 0) {
         setPage(1);
+        document.body.classList.remove("unSmooth");
         window.addEventListener("scroll", handleScroll);
       }
     };

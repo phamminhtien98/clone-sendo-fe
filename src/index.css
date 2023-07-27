@@ -10,12 +10,16 @@
 }
 
 html {
-  height         : 100%;
-  margin         : 0;
-  font-size      : 10px;
-  scroll-behavior: smooth;
-  box-sizing     : border-box;
-  font-family    : inherit;
+  height   : 100%;
+  margin   : 0;
+  font-size: 10px;
+
+  box-sizing : border-box;
+  font-family: inherit;
+}
+
+.unSmooth {
+  scroll-behavior: unset !important;
 }
 
 ::-webkit-scrollbar {
@@ -33,6 +37,7 @@ html {
 
 
 body {
+  scroll-behavior : smooth;
   overflow-x      : hidden;
   overflow-y      : scroll;
   font-size       : 1.4rem;
