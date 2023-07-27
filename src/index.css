@@ -18,10 +18,6 @@ html {
   font-family: inherit;
 }
 
-.unSmooth {
-  scroll-behavior: unset !important;
-}
-
 ::-webkit-scrollbar {
   width: 0.8rem;
 }
