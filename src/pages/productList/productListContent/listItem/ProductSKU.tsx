@@ -18,7 +18,7 @@ const ProductSKU = ({ data }: Props) => {
     <div className="p-[0.8rem]">
       <Link to={""} className="text-[#0f1e29]">
         <div
-          className="bg-white rounded-[8px] cursor-pointer overflow-hidden hover:drop-shadow-[0_8px_16px_rgba(0,0,0,0.12)]"
+          className="bg-white rounded-[8px] cursor-pointer hover:drop-shadow-[0_8px_16px_rgba(0,0,0,0.12)]"
           style={{
             boxShadow:
               "0 2px 4px 0 rgba(0,0,0,.12), 0 -2px 2px 0 rgba(0,0,0,.04)",

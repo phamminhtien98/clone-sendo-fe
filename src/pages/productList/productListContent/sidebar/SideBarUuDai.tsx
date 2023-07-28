@@ -103,15 +103,6 @@ const SideBarUuDai = ({ dataFilter }: Props) => {
                   className="flex items-center rounded-[4px] pl-[1.2rem] pr-[0.8rem] py-[0.4rem] hover:bg-[#f2f3f4] hover:font-[700] cursor-pointer max-h-[3.2rem]"
                   key={countItem}
                 >
-                  <img
-                    src={
-                      isInputChecked(item.attribute_key ?? "", itemAtt.value)
-                        ? inputIsChecked
-                        : inputUnChecked
-                    }
-                    alt=""
-                    className="w-[24px] mr-[0.8rem]"
-                  />
                   <label
                     className={`${
                       isInputChecked(item.attribute_key ?? "", itemAtt.value)
@@ -120,6 +111,15 @@ const SideBarUuDai = ({ dataFilter }: Props) => {
                     } text-[#3f4b53] cursor-pointer w-full flex items-center h-[24px] overflow-hidden `}
                     htmlFor={`${item.attribute_term}${countItem}`}
                   >
+                    <img
+                      src={
+                        isInputChecked(item.attribute_key ?? "", itemAtt.value)
+                          ? inputIsChecked
+                          : inputUnChecked
+                      }
+                      alt=""
+                      className="w-[24px] mr-[0.8rem]"
+                    />
                     <span className=" whitespace-nowrap text-ellipsis overflow-hidden">
                       {itemAtt.name}
                     </span>
